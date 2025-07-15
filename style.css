@@ -1,0 +1,116 @@
+/* Custom styles for a modern e-commerce look */
+body {
+  font-family: "Heebo", sans-serif;
+  background-color: #f8f9fa;
+  transition: background-color 0.5s ease;
+}
+
+.font-logo {
+  font-family: "Rubik", sans-serif;
+}
+
+/* --- Theme Color Variables --- */
+:root {
+  --primary-color: #6f42c1; /* Default Home Purple */
+  --primary-light-color: #f4effc;
+  --text-color: #212529;
+  --text-light-color: #6c757d;
+  --border-color: #dee2e6;
+}
+
+.theme-home {
+  --primary-color: #6f42c1; /* Purple */
+  --primary-light-color: #f4effc;
+}
+
+.theme-men {
+  --primary-color: #0d6efd; /* Blue */
+  --primary-light-color: #e7f0ff;
+}
+
+.theme-women {
+  --primary-color: #d63384; /* Pink */
+  --primary-light-color: #fbeaf3;
+}
+
+.theme-children {
+  --primary-color: #ffc107; /* Yellow */
+  --primary-light-color: #fff8e1;
+}
+
+.theme-gifts {
+  --primary-color: #14b8a6; /* Teal */
+  --primary-light-color: #e6f8f6;
+}
+
+.theme-likes {
+  --primary-color: #dc2626; /* Red for Likes */
+  --primary-light-color: #fee2e2;
+}
+
+/* Applying theme colors */
+.theme-primary-bg {
+  background-color: var(--primary-color);
+}
+.theme-primary-light-bg {
+  background-color: var(--primary-light-color);
+}
+.theme-primary-text {
+  color: var(--primary-color);
+}
+.theme-primary-border {
+  border-color: var(--primary-color);
+}
+.theme-primary-fill {
+  fill: var(--primary-color);
+}
+
+.nav-link {
+  position: relative;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* 8px */
+}
+.nav-link.active {
+  color: var(--primary-color);
+  font-weight: 700;
+}
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+}
+
+.product-card {
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #ffffff;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  transition: background-color 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: color-mix(in srgb, var(--primary-color) 85%, black);
+}
+
+.like-btn.liked svg {
+  fill: #dc2626; /* Red fill for liked items */
+  stroke: #dc2626;
+}

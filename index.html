@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>רכישה צנועה</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&family=Rubik:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body id="page-body" class="theme-home">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <header
+        class="flex items-center justify-between py-4 border-b"
+        style="border-color: var(--border-color)"
+      >
+        <div class="flex-1 flex justify-start">
+          <div class="flex items-center gap-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="cursor-pointer text-gray-600 hover:theme-primary-text"
+            >
+              <path
+                d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"
+              ></path>
+            </svg>
+            <h1 class="text-2xl font-bold text-gray-800 font-logo">
+              רכישה צנועה
+            </h1>
+          </div>
+        </div>
+
+        <nav
+          class="hidden md:flex justify-center items-center gap-8 text-lg text-gray-600"
+        >
+          <a id="nav-home" class="nav-link active"><span>בית</span></a>
+          <a id="nav-men" class="nav-link"><span>גברים</span></a>
+          <a id="nav-women" class="nav-link"><span>נשים</span></a>
+          <a id="nav-children" class="nav-link"><span>ילדים</span></a>
+          <a id="nav-gifts" class="nav-link"><span>מתנות</span></a>
+          <a id="nav-likes" class="nav-link"><span>אהבתי</span></a>
+        </nav>
+
+        <div class="flex-1 flex justify-end">
+          <div class="flex items-center gap-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="cursor-pointer text-gray-600 hover:theme-primary-text"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <div
+              class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-sm"
+            >
+              ש
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="py-10">
+        <section
+          id="hero-section"
+          class="theme-primary-light-bg rounded-2xl p-8 md:p-12 mb-10 text-center flex flex-col items-center transition-colors duration-300"
+        >
+          <div
+            id="hero-icon"
+            class="w-16 h-16 theme-primary-bg rounded-full flex items-center justify-center mb-4"
+          ></div>
+          <h2
+            id="hero-title"
+            class="text-3xl md:text-4xl font-bold theme-primary-text mb-2 font-logo"
+          ></h2>
+          <p id="hero-subtitle" class="max-w-2xl text-gray-600"></p>
+        </section>
+
+        <div
+          id="product-grid"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
+          <!-- Product cards will be injected here by JavaScript -->
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ניהול מוצרים - רכישה צנועה</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Heebo", sans-serif;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <div id="admin-panel" class="container mx-auto p-8 hidden">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6">ניהול מוצרים</h1>
+      <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h2 class="text-xl font-semibold mb-4">הוספת מוצר חדש</h2>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <input
+            id="product-id-input"
+            type="text"
+            placeholder="הדבק כאן קישור או מזהה מוצר מאלי אקספרס"
+            class="flex-grow p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+          />
+          <select id="category-select" class="p-2 border rounded-md">
+            <option value="men">גברים</option>
+            <option value="women">נשים</option>
+            <option value="children">ילדים</option>
+            <option value="gifts">מתנות</option>
+          </select>
+          <button
+            id="add-product-btn"
+            class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          >
+            הוסף
+          </button>
+        </div>
+        <p id="add-status" class="text-sm mt-2"></p>
+      </div>
+      <div>
+        <h2 class="text-xl font-semibold mb-4">רשימת מוצרים קיימים</h2>
+        <div id="product-list" class="space-y-3">
+          <p>טוען רשימת מוצרים...</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const adminPanel = document.getElementById("admin-panel");
+      const productListDiv = document.getElementById("product-list");
+      const productIdInput = document.getElementById("product-id-input");
+      const categorySelect = document.getElementById("category-select");
+      const addProductBtn = document.getElementById("add-product-btn");
+      const addStatus = document.getElementById("add-status");
+
+      const API_ENDPOINT = "/.netlify/functions/api";
+
+      function authenticate() {
+        const password = prompt("אנא הזן את סיסמת הניהול:");
+        if (password === "2515") {
+          adminPanel.classList.remove("hidden");
+          fetchProducts();
+        } else {
+          alert("סיסמה שגויה. הגישה נדחתה.");
+          document.body.innerHTML =
+            '<h1 class="text-center text-2xl mt-10">גישה נדחתה</h1>';
+        }
+      }
+
+      function extractProductId(input) {
+        if (!input) return null;
+        const match = input.match(/\/item\/(\d+)\.html/);
+        if (match && match[1]) return match[1];
+        if (/^\d+$/.test(input.trim())) return input.trim();
+        return null;
+      }
+
+      function renderProducts(products) {
+        productListDiv.innerHTML = "";
+        const allProductIds = Object.values(products).flat();
+        if (allProductIds.length === 0) {
+          productListDiv.innerHTML =
+            '<p class="text-gray-500">עדיין לא הוספת מוצרים.</p>';
+          return;
+        }
+        for (const category in products) {
+          products[category].forEach((productId) => {
+            const productDiv = document.createElement("div");
+            productDiv.className =
+              "bg-white p-4 rounded-md shadow-sm flex justify-between items-center";
+            productDiv.innerHTML = `
+                        <div>
+                            <span class="font-bold text-gray-700">${productId}</span>
+                            <span class="text-sm text-gray-500 ml-4 bg-gray-200 px-2 py-1 rounded-full">${category}</span>
+                        </div>
+                        <button class="text-red-500 hover:text-red-700" onclick="removeProduct('${productId}', '${category}')">הסר</button>
+                    `;
+            productListDiv.appendChild(productDiv);
+          });
+        }
+      }
+
+      async function fetchProducts() {
+        try {
+          const response = await fetch(`${API_ENDPOINT}?action=getProducts`);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              `שגיאת שרת: ${errorData.error || response.statusText}`
+            );
+          }
+          const products = await response.json();
+          renderProducts(products);
+        } catch (error) {
+          productListDiv.innerHTML = `<p class="text-red-500 font-bold">שגיאה בטעינת המוצרים: ${error.message}</p>`;
+        }
+      }
+
+      async function addProduct() {
+        const productId = extractProductId(productIdInput.value);
+        const category = categorySelect.value;
+        if (!productId) {
+          alert("הקישור או המזהה שהוזן אינו תקין.");
+          return;
+        }
+
+        addStatus.textContent = "מוסיף...";
+        addStatus.className = "text-sm mt-2 text-blue-600";
+
+        try {
+          const response = await fetch(`${API_ENDPOINT}?action=addProduct`, {
+            method: "POST",
+            body: JSON.stringify({ productId, category }),
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              `שגיאת שרת: ${errorData.error || response.statusText}`
+            );
+          }
+          addStatus.textContent = "המוצר נוסף בהצלחה!";
+          addStatus.className = "text-sm mt-2 text-green-600";
+          productIdInput.value = "";
+          fetchProducts();
+        } catch (error) {
+          addStatus.textContent = `שגיאה בהוספת המוצר: ${error.message}`;
+          addStatus.className = "text-sm mt-2 text-red-600";
+        }
+      }
+
+      async function removeProduct(productId, category) {
+        if (!confirm(`האם אתה בטוח שברצונך להסיר את המוצר ${productId}?`))
+          return;
+        try {
+          const response = await fetch(`${API_ENDPOINT}?action=removeProduct`, {
+            method: "POST",
+            body: JSON.stringify({ productId, category }),
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              `שגיאת שרת: ${errorData.error || response.statusText}`
+            );
+          }
+          fetchProducts();
+        } catch (error) {
+          alert(`שגיאה בהסרת המוצר: ${error.message}`);
+        }
+      }
+
+      addProductBtn.addEventListener("click", addProduct);
+      authenticate();
+    </script>
+  </body>
+</html>

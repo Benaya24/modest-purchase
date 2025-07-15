@@ -1,0 +1,3 @@
+# קובץ הגדרות עבור Netlify
+[functions]
+  directory = "netlify/functions/"
