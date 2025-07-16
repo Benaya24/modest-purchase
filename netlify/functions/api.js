@@ -1,50 +1,72 @@
-const { getStore } = require('@netlify/blobs');
+// --- Netlify Function: Product Management API ---
+const { getStore } = require("@netlify/blobs");
 
-const STORE_NAME = 'manual-products';
+const STORE_NAME = "manual-products";
+const KEY = "all_products";
 
-// Helper to get all products from the database
+// Helper: Load existing products or return empty array
 const getProducts = async () => {
-    const store = getStore(STORE_NAME);
-    try {
-        const data = await store.get('all_products', { type: 'json' });
-        return data || []; // Return an array of products
-    } catch (error) {
-        if (error.name === 'BlobNotFoundError') {
-            return []; // If store is empty, return empty array
-        }
-        throw error;
-    }
+  const store = getStore(STORE_NAME);
+  try {
+    const products = await store.get(KEY, { type: "json" });
+    return Array.isArray(products) ? products : [];
+  } catch (error) {
+    if (error.name === "BlobNotFoundError") return [];
+    throw error;
+  }
 };
 
-exports.handler = async function(event) {
-    const { action } = event.queryStringParameters;
-    
-    try {
-        if (event.httpMethod === 'GET' && action === 'getProducts') {
-            const products = await getProducts();
-            return { statusCode: 200, body: JSON.stringify({ products }) };
-        }
-
-        if (event.httpMethod === 'POST' && action === 'addProduct') {
-            const newProduct = JSON.parse(event.body);
-            const products = await getProducts();
-            products.push(newProduct);
-            await getStore(STORE_NAME).setJSON('all_products', products);
-            return { statusCode: 200, body: JSON.stringify({ message: 'Product added.' }) };
-        }
-
-        if (event.httpMethod === 'POST' && action === 'removeProduct') {
-            const { id } = JSON.parse(event.body);
-            let products = await getProducts();
-            products = products.filter(p => p.id !== id);
-            await getStore(STORE_NAME).setJSON('all_products', products);
-            return { statusCode: 200, body: JSON.stringify({ message: 'Product removed.' }) };
-        }
-        
-        return { statusCode: 404, body: 'Action not found.' };
-
-    } catch (error) {
-        console.error("[FUNCTION_ERROR]", error);
-        return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
-    }
+// Helper: Save updated products array
+const saveProducts = async (products) => {
+  const store = getStore(STORE_NAME);
+  await store.setJSON(KEY, products);
 };
+
+// --- Main Handler ---
+exports.handler = async function (event) {
+  const { httpMethod, queryStringParameters, body } = event;
+  const action = queryStringParameters?.action;
+
+  try {
+    if (httpMethod === "GET" && action === "getProducts") {
+      const products = await getProducts();
+      return jsonResponse(200, { products });
+    }
+
+    if (httpMethod === "POST" && action === "addProduct") {
+      if (!body) return jsonResponse(400, { error: "Missing product data" });
+
+      const newProduct = JSON.parse(body);
+      const products = await getProducts();
+      products.push(newProduct);
+      await saveProducts(products);
+
+      return jsonResponse(200, { message: "Product added successfully." });
+    }
+
+    if (httpMethod === "POST" && action === "removeProduct") {
+      if (!body) return jsonResponse(400, { error: "Missing product ID" });
+
+      const { id } = JSON.parse(body);
+      if (!id) return jsonResponse(400, { error: "Product ID required" });
+
+      const products = await getProducts();
+      const filtered = products.filter((p) => p.id !== id);
+
+      await saveProducts(filtered);
+      return jsonResponse(200, { message: "Product removed successfully." });
+    }
+
+    return jsonResponse(404, { error: "Unsupported action or method." });
+  } catch (err) {
+    console.error("[API_ERROR]", err);
+    return jsonResponse(500, { error: err.message || "Internal Server Error" });
+  }
+};
+
+// --- Helper: JSON Response ---
+const jsonResponse = (statusCode, data) => ({
+  statusCode,
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data),
+});
