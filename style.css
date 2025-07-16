@@ -1,17 +1,18 @@
-/* Custom styles for a modern e-commerce look */
+/* Custom styles for a polished modern e-commerce look */
 body {
   font-family: "Heebo", sans-serif;
   background-color: #f8f9fa;
-  transition: background-color 0.5s ease;
+  transition: background-color 0.4s ease-in-out;
+  color: var(--text-color);
 }
 
 .font-logo {
   font-family: "Rubik", sans-serif;
 }
 
-/* --- Theme Color Variables --- */
+/* --- Theme Variables --- */
 :root {
-  --primary-color: #6f42c1; /* Default Home Purple */
+  --primary-color: #6f42c1; /* Default (Home) */
   --primary-light-color: #f4effc;
   --text-color: #212529;
   --text-light-color: #6c757d;
@@ -19,36 +20,36 @@ body {
 }
 
 .theme-home {
-  --primary-color: #6f42c1; /* Purple */
+  --primary-color: #6f42c1;
   --primary-light-color: #f4effc;
 }
 
 .theme-men {
-  --primary-color: #0d6efd; /* Blue */
+  --primary-color: #0d6efd;
   --primary-light-color: #e7f0ff;
 }
 
 .theme-women {
-  --primary-color: #d63384; /* Pink */
+  --primary-color: #d63384;
   --primary-light-color: #fbeaf3;
 }
 
 .theme-children {
-  --primary-color: #ffc107; /* Yellow */
+  --primary-color: #ffc107;
   --primary-light-color: #fff8e1;
 }
 
 .theme-gifts {
-  --primary-color: #14b8a6; /* Teal */
+  --primary-color: #14b8a6;
   --primary-light-color: #e6f8f6;
 }
 
 .theme-likes {
-  --primary-color: #dc2626; /* Red for Likes */
+  --primary-color: #dc2626;
   --primary-light-color: #fee2e2;
 }
 
-/* Applying theme colors */
+/* Utility Theme Classes */
 .theme-primary-bg {
   background-color: var(--primary-color);
 }
@@ -65,52 +66,81 @@ body {
   fill: var(--primary-color);
 }
 
+/* Navigation Styles */
 .nav-link {
   position: relative;
   transition: color 0.3s ease;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem; /* 8px */
+  gap: 0.5rem;
+  font-weight: 500;
 }
+
 .nav-link.active {
   color: var(--primary-color);
   font-weight: 700;
 }
+
 .nav-link.active::after {
   content: "";
   position: absolute;
-  bottom: -8px;
+  bottom: -6px;
   left: 50%;
   transform: translateX(-50%);
   width: 6px;
   height: 6px;
-  border-radius: 50%;
+  border-radius: 9999px;
   background-color: var(--primary-color);
 }
 
+/* Product Card */
 .product-card {
   border: 1px solid var(--border-color);
-  border-radius: 16px;
+  border-radius: 1rem;
   overflow: hidden;
+  background-color: #fff;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  background-color: #ffffff;
-}
-.product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
 }
 
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Primary Button */
 .btn-primary {
   background-color: var(--primary-color);
-  color: white;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
   transition: background-color 0.3s ease;
+  text-align: center;
 }
+
 .btn-primary:hover {
   background-color: color-mix(in srgb, var(--primary-color) 85%, black);
 }
 
+/* Like Button */
 .like-btn.liked svg {
-  fill: #dc2626; /* Red fill for liked items */
+  fill: #dc2626;
   stroke: #dc2626;
+  transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .nav-link {
+    font-size: 1rem;
+  }
+}
+
+@media (hover: hover) {
+  .product-card:hover {
+    cursor: pointer;
+  }
 }
